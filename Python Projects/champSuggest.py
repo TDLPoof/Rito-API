@@ -30,11 +30,11 @@ mastCt = urllib.request.urlopen(cMastUrl, context=ctx)
 time.sleep(0.25)
 
 mastData = mastCt.read().decode()
-champs = json.loads(mastData)
+champsMast = json.loads(mastData)
 ids = list()
 
-for champ in champs:
-    ids.append(champ["championId"])
+for champMast in champsMast:
+    ids.append(champMast["championId"])
 
 cnvUrl = "https://na1.api.riotgames.com/lol/static-data/v3/champions/" + str(ids[0]) + "?api_key=" + apiKey
 cnvCt = urllib.request.urlopen(cnvUrl, context=ctx)
@@ -51,4 +51,8 @@ champData = champCt.read().decode()
 champInfo = json.loads(champData)
 champRoles = champInfo["data"][cnvJs["key"]]["tags"]
 
-print("Role:", champRoles[0])
+role = champRoles[0]
+
+cmpsUrl = "http://ddragon.leagueoflegends.com/cdn/6.24.1/data/en_US/champion.json"
+cmpsCt = urllib.request.urlopen(ddrg, context=ctx)
+time.sleep(0.25)
