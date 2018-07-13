@@ -42,14 +42,13 @@ time.sleep(0.25)
     
 cnvData = cnvCt.read().decode()
 cnvJs = json.loads(cnvData)
-    
-print(cnvJs["name"] + ",", cnvJs["title"])
 
-ddrg = "http://ddragon.leagueoflegends.com/cdn/6.24.1/data/en_US/champion/" + cnvJs["name"] + ".json"
+ddrg = "http://ddragon.leagueoflegends.com/cdn/8.13.1/data/en_US/champion/" + cnvJs["name"] + ".json"
 champCt = urllib.request.urlopen(ddrg, context=ctx)
 time.sleep(0.25)
 
 champData = champCt.read().decode()
 champInfo = json.loads(champData)
-print(json.dumps(champInfo,indent=2))
+champRoles = champInfo["data"][cnvJs["key"]]["tags"]
 
+print("Role:", champRoles[0])
