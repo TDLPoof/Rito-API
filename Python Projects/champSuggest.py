@@ -15,7 +15,7 @@ ctx.verify_mode = ssl.CERT_NONE
 # apiKey = input("Enter your API key: ")
 
 sumName = "tdlpoof"
-apiKey = "RGAPI-44ebfac1-76d0-44b7-9b5b-d41d1fe13301"
+apiKey = "RGAPI-8c5e4dd9-36e8-43e6-9d12-cf1ff4e698a3"
 
 lolUrl = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" + sumName + "?api_key=" + apiKey
 connection = urllib.request.urlopen(lolUrl, context=ctx)
