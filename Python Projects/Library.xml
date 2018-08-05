@@ -14,6 +14,7 @@
 	<dict>
 		<key>369</key>
 		<dict>
+			<key>Size</key><integer>4344295</integer>
 			<key>Track ID</key><integer>369</integer>
 			<key>Name</key><string>Another One Bites The Dust</string>
 			<key>Artist</key><string>Queen</string>
@@ -21,7 +22,6 @@
 			<key>Album</key><string>Greatest Hits</string>
 			<key>Genre</key><string>Rock</string>
 			<key>Kind</key><string>MPEG audio file</string>
-			<key>Size</key><integer>4344295</integer>
 			<key>Total Time</key><integer>217103</integer>
 			<key>Disc Number</key><integer>1</integer>
 			<key>Disc Count</key><integer>1</integer>
