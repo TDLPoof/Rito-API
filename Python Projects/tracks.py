@@ -13,6 +13,7 @@
 import sqlite3 as sql
 import xml.etree.ElementTree as ET
 from platform import node
+from emaildb import insertQuery
 
 
 
@@ -25,6 +26,8 @@ csr.execute("DROP TABLE IF EXISTS Album")
 csr.execute("CREATE TABLE Album (id INTEGER PRIMARY KEY AUTOINCREMENT, artist_id int , title varchar(64))")
 csr.execute("DROP TABLE IF EXISTS Track")
 csr.execute("CREATE TABLE Track (id INTEGER PRIMARY KEY, title varchar(64), album_id int, track_duration_in_seconds, rating int, play_count int)")
+
+i = 0
 
 tree = ET.parse("Library.xml")
 root = tree.getroot()
@@ -45,11 +48,23 @@ def getValue(node, keyname):
 # If yes, then return the corresponding artist id
 # If not, then insert an entry with that artist name into the artist table, and return the id.
 def getArtistID(name):
-    csr.execute("SELECT * FROM Artist WHERE name = '%s')" % (name))
+    csr.execute("SELECT id FROM Artist WHERE name = '%s'" % (name))
+    ids = csr.fetchone()
+    if ids is None:
+        csr.execute("INSERT INTO Artist (name) VALUES ('%s')" % (name))
+        csr.execute("SELECT id FROM Artist WHERE name = '%s'" % (name))
+        ids = csr.fetchone()
+    return ids[0]
 
 # Similar to getArtistID
-def getAlbumID(title):
-    csr.execute("SELECT * FROM Album WHERE title = '%s')" % (title))
+def getAlbumID(title, artist_id):
+    csr.execute("SELECT id FROM Album WHERE title = '%s' AND artist_id = %d" % (title, artist_id))
+    ids = csr.fetchone()
+    if ids is None:
+        csr.execute("INSERT INTO Album (artist_id, title) VALUES (%d, '%s')" % (artist_id, title))
+        csr.execute("SELECT id FROM Album WHERE title = '%s' AND artist_id = %d" % (title, artist_id))
+        ids = csr.fetchone()    
+    return ids[0]
 
 trackElements = root.findall("dict/dict/dict")
 
@@ -61,9 +76,23 @@ for node in trackElements:
     trackDuration = getValue(node, "Total Time")
     trackRating = getValue(node, "Rating")
     trackPlayCount = getValue(node, "Play Count")
-    insertQueryII = "INSERT INTO Artist (name) VALUES('%s')" % (artist)
-    csr.execute(insertQueryII)
-    
+    try:
+        artistId = getArtistID(artist)
+        albumId = getAlbumID(albumName, artistId)
+        print(artistId, albumId, trackId, "Track Name:", trackName)
+
+        insertQuery = "INSERT INTO Track VALUES(%d, '%s', %d, %d, %d, %d)" % (trackId, trackName, albumId, trackDuration, trackRating, trackPlayCount)
+        csr.execute(insertQuery)
+    except:
+        print("Not available due to malicious information or a different cause.")
+        i += 1
+        continue
+if i == 0:
+    print("No malicious data was acquired. Yippee!")
+elif i == 1:
+    print("1 malicious piece of data was acquired.")
+else:
+    print(i, "pieces of malicious data were acquired.")
 conn.commit()
 conn.close()
 # DO NOT FORGET TO COMMIT and CLOSE    
